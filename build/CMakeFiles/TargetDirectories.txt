@@ -1,0 +1,5 @@
+/home/neuron/Projects/流体仿真/LBM_plane_cmaketest/build/CMakeFiles/edit_cache.dir
+/home/neuron/Projects/流体仿真/LBM_plane_cmaketest/build/CMakeFiles/rebuild_cache.dir
+/home/neuron/Projects/流体仿真/LBM_plane_cmaketest/build/src/CMakeFiles/main.dir
+/home/neuron/Projects/流体仿真/LBM_plane_cmaketest/build/src/CMakeFiles/edit_cache.dir
+/home/neuron/Projects/流体仿真/LBM_plane_cmaketest/build/src/CMakeFiles/rebuild_cache.dir

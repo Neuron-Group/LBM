@@ -1,0 +1,155 @@
+
+#include "PLANE.h"
+
+int PLANE::idx(IDX pos) { return this->sizeX * pos.y() + pos.x(); }
+
+PLANE::PLANE() {
+  this->sizeX = 160;
+  this->sizeY = 100;
+  this->rho = new float[this->sizeX * this->sizeY]{};
+  this->vel = new POINT[this->sizeX * this->sizeY]{};
+  this->barr = new bool[this->sizeX * this->sizeY]{};
+  for (int i = 0; i < this->sizeX * this->sizeY; i++) {
+    this->barr[i] = false;
+  }
+  this->issource_vel = new bool[this->sizeX * this->sizeY]{};
+  for (int i = 0; i < this->sizeX * this->sizeY; i++) {
+    this->issource_vel[i] = false;
+  }
+  this->source_vel = new POINT[this->sizeX * this->sizeY]{};
+
+  this->issource_rho = new bool[this->sizeX * this->sizeY]{};
+  for (int i = 0; i < this->sizeX * this->sizeY; i++) {
+    this->issource_rho[i] = false;
+  }
+
+  this->source_rho = new float[this->sizeX * this->sizeY]{};
+
+  for (int x = 0; x < this->sizeX; x++) {
+    for (int y = 0; y < this->sizeY; y++) {
+      if (y == 0 || y == 99) {
+        this->barr[idx(IDX(x, y))] = true;
+      }
+      // if ((x - 50) * (x - 50) + (y - 50) * (y - 50) <= 16 * 16) {
+      //   this->barr[idx(IDX(x, y))] = true;
+      // }
+      if (x == 0 || x == 1) {
+        this->issource_vel[idx(IDX(x, y))] = true;
+        this->source_vel[idx(IDX(x, y))] = VECTOR(U0, 0.);
+        this->issource_rho[idx(IDX(x, y))] = true;
+        this->source_rho[idx(IDX(x, y))] = D0;
+      } else {
+        issource_vel[idx(IDX(x, y))] = false;
+        issource_rho[idx(IDX(x, y))] = false;
+      }
+      this->rho[idx(IDX(x, y))] = D0 / 2.;
+    }
+  }
+}
+
+void PLANE::INIT() {
+  IDX pos;
+  for (int x = 0; x < sizeX; x++) {
+    for (int y = 0; y < sizeY; y++) {
+      pos.set(x, y);
+      this->vel[idx(pos)].set(U0, 0.);
+      this->rho[idx(pos)] = D0;
+      if (this->isSourceV(pos) == true) {
+        this->vel[idx(pos)] = this->SourceV(pos);
+      }
+      if (this->isSourceRho(pos) == true) {
+        this->mRho(pos, this->sourceRho(pos));
+      }
+    }
+  }
+}
+
+IDX PLANE::size() { return IDX(this->sizeX, this->sizeY); }
+
+float PLANE::Rho(IDX pos) { return this->rho[idx(pos)]; }
+
+VECTOR PLANE::V(IDX pos) { return this->vel[idx(pos)]; }
+
+bool PLANE::isBarr(IDX pos) { return this->barr[idx(pos)]; }
+
+bool PLANE::isSourceV(IDX pos) { return this->issource_vel[idx(pos)]; }
+
+VECTOR PLANE::SourceV(IDX pos) { return this->source_vel[idx(pos)]; }
+
+bool PLANE::isSourceRho(IDX pos) { return this->issource_rho[idx(pos)]; }
+
+float PLANE::sourceRho(IDX pos) { return this->source_rho[idx(pos)]; }
+
+void PLANE::mRho(IDX pos, float value) { this->rho[idx(pos)] = value; }
+
+void PLANE::mV(IDX pos, VECTOR value) { this->vel[idx(pos)] = value; }
+
+void PLANE::SAVE() {
+
+  std::ofstream outFile;
+  outFile.open("test.csv", std::ios::out);
+  for (int i = 0; i < this->sizeX; i++) {
+    for (int j = 0; j < this->sizeY; j++) {
+      IDX thisPos(i, j);
+      // if ((thisPos.x() - 50.) * (thisPos.x() - 50.) +
+      //         (thisPos.y() - 50.) * (thisPos.y() - 50.) <
+      //     16. * 16.) {
+      //   outFile << 0. << ",";
+      //   continue;
+      // }
+      outFile << this->Rho(thisPos) << ",";
+    }
+    outFile << std::endl;
+  }
+  outFile.close();
+
+  outFile.open("test_vabs.csv", std::ios::out);
+  for (int i = 0; i < this->sizeX; i++) {
+    for (int j = 0; j < this->sizeY; j++) {
+      IDX thisPos(i, j);
+      // if ((thisPos.x() - 50.) * (thisPos.x() - 50.) +
+      //         (thisPos.y() - 50.) * (thisPos.y() - 50.) <
+      //     16. * 16.) {
+      //   outFile << 0. << ",";
+      //   continue;
+      // }
+      outFile << this->V(thisPos).abs() << ",";
+    }
+    outFile << std::endl;
+  }
+  outFile.close();
+
+  outFile.open("test_vx.csv", std::ios::out);
+  for (int i = 0; i < this->sizeX; i++) {
+    for (int j = 0; j < this->sizeY; j++) {
+      IDX thisPos(i, j);
+      // if ((thisPos.x() - 50.) * (thisPos.x() - 50.) +
+      //         (thisPos.y() - 50.) * (thisPos.y() - 50.) <
+      //     16. * 16.) {
+      //   outFile << 0. << ",";
+      //   continue;
+      // }
+      outFile << this->V(thisPos).x() << ",";
+    }
+    outFile << std::endl;
+  }
+  outFile.close();
+
+  outFile.open("test_vy.csv", std::ios::out);
+  for (int i = 0; i < this->sizeX; i++) {
+    for (int j = 0; j < this->sizeY; j++) {
+      IDX thisPos(i, j);
+      // if ((thisPos.x() - 50.) * (thisPos.x() - 50.) +
+      //         (thisPos.y() - 50.) * (thisPos.y() - 50.) <
+      //     16. * 16.) {
+      //   outFile << 0. << ",";
+      //   continue;
+      // }
+      outFile << this->V(thisPos).y() << ",";
+    }
+    outFile << std::endl;
+  }
+  outFile.close();
+}
+
+void PLANE::UPDATE() { return; }

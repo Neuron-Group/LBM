@@ -1,0 +1,1 @@
+/usr/bin/c++ -rdynamic CMakeFiles/main.dir/Cspline.cpp.o CMakeFiles/main.dir/FUNCTION.cpp.o CMakeFiles/main.dir/LBM.cpp.o CMakeFiles/main.dir/LINE.cpp.o CMakeFiles/main.dir/PLANE.cpp.o CMakeFiles/main.dir/POINT.cpp.o CMakeFiles/main.dir/main.cpp.o -o /home/neuron/Projects/流体仿真/LBM_plane_cmaketest/bin/main 
